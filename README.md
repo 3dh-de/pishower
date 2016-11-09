@@ -6,10 +6,10 @@ Originally this project was founded to control the access/usage of my Dojo's sho
 
 ## Requirements
 
-1x Raspberry Pi 1 or newer with Raspbian (Debian Jessie or newer) and Python 2.7 installed
-2x TTL level converters (3.3V of GPIO pins to 5.0V to control I2C LCD and 5V relais)
-1x SainSmart LCD 1602 / 2004 display module with HDxxx and I2C controller
-1x 5V 1/2 channel relais 
+1x Raspberry Pi 1 or newer with Raspbian (Debian Jessie or newer) and Python 2.7 installed  
+2x TTL level converters (3.3V of GPIO pins to 5.0V to control I2C LCD and 5V relais)  
+1x SainSmart LCD 1602 / 2004 display module with HDxxx and I2C controller  
+1x 5V 1/2 channel relais  
 
 ## License
 
