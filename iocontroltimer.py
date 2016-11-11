@@ -1,75 +1,84 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 import time
-import sys
 import threading
 import logging
 
 # set up logging to file - see previous section for more details
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                    datefmt='%d.%m. %H:%M:%S')
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+    datefmt='%d.%m. %H:%M:%S')
 
 logger = logging.getLogger()
 
 
-# Control a IO control timer
 class IOControlTimer:
+    """ Timer to exec I/O actions after x seconds """
     timeoutSeconds = 420    # 7min
-    finished       = False
-    timer          = None
-   
-    def __init__(self,seconds=420):
+    _finished = False
+    _timer = None
+
+    def __init__(self, seconds=420):
         self.timeoutSeconds = seconds
-        self.finished       = False
+        self._finished = False
         logger.debug('timer init for {} seconds'.format(seconds))
 
+    def __del__(self):
+        self.stop()
+
     def start(self):
-        if self.timer is not None:
-            if self.timer.isActive():
-                logger.warning('timer is already running! cancelling timer to start new one.')
+        if self._timer is not None:
+            if self._timer.is_alive():
+                logger.warning('timer is already running!'
+                               ' cancelling timer to start new one.')
             self.stop()
-                
-        self.timer = threading.Timer(self.timeoutSeconds, self._handleTimeout)
-        self.timer.start()
+
+        self._timer = threading.Timer(self.timeoutSeconds, self._handleTimeout)
+        self._timer.start()
 
         logger.info('timer started')
 
     def stop(self):
-        if self.timer is not None:
-            self.timer.cancel()
-            self.timer = None
-        
-        self.finished = False
+        if self._timer is not None:
+            self._timer.cancel()
+            self._timer.join()
+            self._timer = None
+
+        self._finished = False
         logger.info('timer stopped')
 
     def reset(self):
         self.stop()
         self.start()
+        logger.info('timer resetted')
 
     def isActive(self):
-        return self.timer is not None and self.timer.isActive()
+        return self._timer is not None and self._timer.is_alive()
 
     def isFinished(self):
-        return self.finished
+        return self._finished
 
     def _handleTimeout(self):
-        self.finished = True
+        self._finished = True
         logger.debug('timeout reached!')
+
 
 # Control IO ports to activate/deactivate devices
 class IOControl:
     pass
 
 
-controlTimer = IOControlTimer(5)
-controlTimer.start()
+# simple demo code for script execution
+if __name__ == "__main__":
+    import sys
 
+    controlTimer = IOControlTimer(5)
+    controlTimer.start()
 
-while True:
-    if controlTimer.isFinished():
-        sys.exit(0)
+    while True:
+        if controlTimer.isFinished():
+            sys.exit(0)
 
-    time.sleep(0.1)
+        time.sleep(0.1)
 

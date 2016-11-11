@@ -1,19 +1,20 @@
 #!/usr/bin/python
 
-import time
+import os
 import sys
-import threading
+scriptPath = os.path.realpath(os.path.dirname(sys.argv[0]))
+os.chdir(scriptPath)
+sys.path.append("../")
+
 import logging
 import unittest
-import sys
-sys.path.append('../')
-
 import iocontroltimer as timer
 
 # set up logging to file - see previous section for more details
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                    datefmt='%d.%m. %H:%M:%S')
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+    datefmt='%d.%m. %H:%M:%S')
 
 logger = logging.getLogger()
 
@@ -21,25 +22,24 @@ logger = logging.getLogger()
 # Control a IO control timer
 class TestIOControlTimer(unittest.TestCase):
     control = None
-   
+
     def setUp(self):
-        self.control = timer.IOControlTimer()
+        self.control = timer.IOControlTimer(10)
         logger.debug('timer init for {} seconds'.format(self.control.timeoutSeconds))
 
     def test_start(self):
-        self.assertEqual(self.control.timer,        None, 'timer is not empty after init!')
+        self.assertEqual(self.control._timer,        None, 'timer is not empty after init!')
 
         self.control.start()
 
-        self.assertNotEqual(self.control.timer,     None, 'timer is still empty after start!')
+        self.assertNotEqual(self.control._timer,     None, 'timer is still empty after start!')
 
     def test_stop(self):
-        self.assertNotEqual(self.control.timer,     None, 'timer is not initialized after start!')
+        self.assertNotEqual(self.control._timer,     None, 'timer is not initialized after start!')
 
         self.control.stop()
 
         self.assertEqual(self.control.isActive(),   False, 'timer is not stopped correctly!')
-        self.assertEqual(self.control.finished,     False, 'finished flag invalid after stop!')
         self.assertEqual(self.control.isFinished(), False, 'finished flag invalid after stop!')
 
     def test_reset(self):
@@ -61,5 +61,5 @@ class TestIOControlTimer(unittest.TestCase):
 
 
 # exec tests
-if __name__ == "__main__": 
+if __name__ == "__main__":
     unittest.main()
