@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 import time
 import Adafruit_DHT
@@ -17,8 +16,6 @@ sensor_args = {'11': Adafruit_DHT.DHT11,
 
 sensor = sensor_args['11']
 pin = 4
-
-device.clear()
 
 
 def fadeMessage(msg, seconds=2.5, f=TINY_FONT):
@@ -40,6 +37,8 @@ def fadeMessage(msg, seconds=2.5, f=TINY_FONT):
         time.sleep(0.150)
 
     return
+
+device.clear()
 
 while True:
     msg = u'{0}'.format(time.strftime('%H:%M'))
