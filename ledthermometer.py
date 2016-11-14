@@ -22,31 +22,31 @@ def fadeMessage(msg, seconds=2.5, f=TINY_FONT):
     """ display given message string by fading in and out the brightness """
     device.brightness(0)
     device.show_message(msg, font=f, always_scroll=False)
-    print('intensity = 0, msg = {0}'.format(msg))
 
     for intensity in range(8):
         device.brightness(intensity)
-        print('intensity = {0}'.format(intensity))
         time.sleep(0.150)
-
     time.sleep(3.05)
 
     for intensity in range(8):
         device.brightness(7 - intensity)
-        print('intensity = {0}'.format(7 - intensity))
         time.sleep(0.150)
-
     return
 
-device.clear()
+try:
+    device.clear()
 
-while True:
-    msg = u'{0}'.format(time.strftime('%H:%M'))
-    fadeMessage(msg, 2.5, TINY_FONT)
-    time.sleep(1.0)
-
-    humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
-    if humidity is not None and temperature is not None:
-        msg = u'{0:0.0f}c {1:0.0f}%'.format(temperature, humidity)
+    while True:
+        msg = u'{0}'.format(time.strftime('%H:%M'))
         fadeMessage(msg, 2.5, TINY_FONT)
         time.sleep(1.0)
+
+        humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
+        if humidity is not None and temperature is not None:
+            msg = u'{0:0.0f}c {1:0.0f}%'.format(temperature, humidity)
+            fadeMessage(msg, 2.5, TINY_FONT)
+            time.sleep(1.0)
+
+# Abbruch durch Taste Strg-C
+except KeyboardInterrupt:
+    device.clear()
