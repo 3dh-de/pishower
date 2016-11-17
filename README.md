@@ -29,7 +29,7 @@ Max 7219 controlled array of 8x8 red LED panels
 
 ### LCD 1602 I2C Display
 
-SainSmart IIC/I2C/TWI 1602 Serial LCD Module, white on blue backlight, 16x2 chars
+SainSmart IIC/I2C/TWI 1602 Serial LCD Module with HD44780 controller, white on blue backlight, 16x2 chars
 
 Due to 5VDC TTL level of the I2C module a 3.3V to 5V level changer is needed to connect it with the RPi's GPIOs.
 
