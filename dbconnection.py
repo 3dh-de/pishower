@@ -1,15 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import time
-import sys
 import sqlite3
 import logging
 
 # set up logging to file - see previous section for more details
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                    datefmt='%d.%m. %H:%M:%S')
+logging.basicConfig(
+    level=logging.DEBUG, datefmt='%d.%m. %H:%M:%S',
+    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
 
 logger = logging.getLogger()
 
@@ -61,21 +59,12 @@ class DBConnection:
             else:
                 fieldStr = '{0}, {1}'.format(fieldStr, field)
 
-        sql = ""
-        try:
-            with sqlite3.connect(self._dbfile) as connection:
-                cursor = connection.cursor()
-                sql = "CREATE TABLE {0} ({1})".format(tableName, fieldStr)
-                cursor.execute(sql)
-                logger.debug('created table "{0}({1})"'.format(tableName, fieldStr))
-                if primaryKey and not primaryKey.isspace():
-                    sql = "CREATE UNIQUE INDEX index_{0}_{1} ON {0}({1})".format(tableName, primaryKey)
-                    cursor.execute(sql)
-                    logger.debug('created index for "{0}({1})"'.format(tableName, primaryKey))
-        except sqlite3.OperationalError as err:
-            logger.error("{0} for query: {1}".format(err, sql))
-            return False
-        return True
+        sqls = []
+        sqls.append("CREATE TABLE {0} ({1})".format(tableName, fieldStr))
+        if primaryKey and not primaryKey.isspace():
+            sqls.append("CREATE UNIQUE INDEX index_{0}_{1} ON {0}({1})".format(tableName, primaryKey))
+        retval = self._exec_queries(sqls)
+        return True if retval is not None else False
 
     def deleteTable(self, tableName):
         """ Delete the given table
@@ -130,6 +119,7 @@ class DBConnection:
         Return results as one extended array
         """
         results = []
+        sql = ""
         if self._dbfile is None:
             logger.error(
                 'Cannot execute SQL query! '
@@ -139,7 +129,8 @@ class DBConnection:
         try:
             with sqlite3.connect(self._dbfile) as connection:
                 cursor = connection.cursor()
-                for sql in sqlQueries:
+                for query in sqlQueries:
+                    sql = query
                     cursor.execute(sql)
                     logger.debug('executed query "{0}"'.format(sql))
                     for row in cursor:
@@ -148,7 +139,8 @@ class DBConnection:
                             'added query "{0}" results "{1}" '
                             'to return value'.format(sql, row))
         except sqlite3.OperationalError as err:
-            logger.error(err)
+            logger.error("{0} for query: {1}".format(err, sql))
+            return None
         return results
 
 
