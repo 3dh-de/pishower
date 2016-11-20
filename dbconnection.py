@@ -81,15 +81,9 @@ class DBConnection:
                 'Table does not exist!'.format(tableName))
             return False
 
-        try:
-            with sqlite3.connect(self._dbfile) as connection:
-                cursor = connection.cursor()
-                cursor.execute("DROP TABLE {0}".format(tableName))
-                logger.debug('deleted table "{0}"'.format(tableName))
-        except sqlite3.OperationalError as err:
-            logger.error(err)
-            return False
-        return True
+        sqls = ["DROP TABLE {0}".format(tableName)]
+        retval = self._exec_queries(sqls)
+        return True if retval is not None else False
 
     def tableExists(self, tableName):
         """ Check if given table exists
@@ -100,18 +94,10 @@ class DBConnection:
             logger.error('Invalid table name "{0}" given!'.format(tableName))
             return False
 
-        try:
-            with sqlite3.connect(self._dbfile) as connection:
-                cursor = connection.cursor()
-                cursor.execute(
-                    "SELECT name FROM sqlite_master "
-                    "WHERE type='table' AND name='{0}'".format(tableName))
-                if cursor.fetchone() is None:
-                    return False
-        except sqlite3.OperationalError as err:
-            logger.error(err)
-            return False
-        return True
+        sqls = ["SELECT name FROM sqlite_master "
+                "WHERE type='table' AND name='{0}'".format(tableName)]
+        retval = self._exec_queries(sqls)
+        return True if len(retval) and retval[0] is not None else False
 
     def _exec_queries(self, sqlQueries=[]):
         """ Execute given SQL statements
@@ -131,15 +117,14 @@ class DBConnection:
                 cursor = connection.cursor()
                 for query in sqlQueries:
                     sql = query
-                    cursor.execute(sql)
+                    for row in cursor.execute(sql):
+                        results.append(row)
+                        # logger.debug(
+                        #    'added query "{0}" results "{1}" '
+                        #    'to return value'.format(sql, row))
                     logger.debug('executed query "{0}"'.format(sql))
-                    for row in cursor:
-                        results.extend(row)
-                        logger.debug(
-                            'added query "{0}" results "{1}" '
-                            'to return value'.format(sql, row))
         except sqlite3.OperationalError as err:
-            logger.error("{0} for query: {1}".format(err, sql))
+            logger.error("{0}! query: {1}".format(err, sql))
             return None
         return results
 
@@ -149,6 +134,8 @@ if __name__ == "__main__":
     db = DBConnection()
     if db.tableExists('user'):
         db.deleteTable('user')
+    else:
+        logger.error('check for existing table failed!')
     db.createTable('user', ['id INTEGER', 'name', 'firstname', 'age INTEGER'])
 
 
