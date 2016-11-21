@@ -39,5 +39,6 @@ def scanBarcode():
 
 while True:
    barcode = scanBarcode()
-   print "result: '{0}'".format(barcode)
-
+   if barcode is not None:
+       print "result: '{0}'".format(barcode)
+   time.sleep(0.5)
