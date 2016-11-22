@@ -46,7 +46,7 @@ Due to 5VDC TTL level of the I2C module a 3.3V to 5V level changer is needed to 
 
 ### 5V Relay
 
-![relay ttl](relay_5v_ttl.jpg)!
+![relay ttl](/doc/relay_5v_ttl.jpg)!
 
 1 or 2 channel 5V TTL relay for 230V
 
