@@ -17,7 +17,7 @@ Originally this project was founded to control the access/usage of my Dojo's sho
 
 ### LED Matrix Panel
 
-![Max7219 8x8 LED]/doc/max7219_8x8_panel.jpg!
+![Max7219 8x8 LED](/doc/max7219_8x8_panel.jpg)!
 
 Max 7219 controlled array of 8x8 red LED panels
 
@@ -31,7 +31,7 @@ Max 7219 controlled array of 8x8 red LED panels
 
 ### LCD 1602 I2C Display
 
-![LCD 1602 HD44780]/doc/lcd_hd44780_i2c.jpg!
+![LCD 1602 HD44780](/doc/lcd_hd44780_i2c.jpg)!
 
 SainSmart IIC/I2C/TWI 1602 Serial LCD Module with HD44780 controller, white on blue backlight, 16x2 chars
 
@@ -46,7 +46,7 @@ Due to 5VDC TTL level of the I2C module a 3.3V to 5V level changer is needed to 
 
 ### 5V Relay
 
-![relay ttl]relay_5v_ttl.jpg!
+![relay ttl](relay_5v_ttl.jpg)!
 
 1 or 2 channel 5V TTL relay for 230V
 
