@@ -12,6 +12,7 @@ Originally this project was founded to control the access/usage of my Dojo's sho
 1x 5V TTL 1/2 channel relais  
 1x DHT11 / DHT22 temperature sensor
 1x Max 7219 LED matrix panel
+1x USB RFID Mifare 13.56 MHz reader
 
 ## Wiring
 
@@ -61,6 +62,8 @@ Due to 5VDC TTL level of the relay module a 3.3V to 5V level changer is needed t
 
 ### Temperature sensor DHTxx
 
+![dht11](/doc/dht11.jpg)!
+
 DHT11 or DHT22 5V temperature and humidity sensor for indoor use.
 
 | LED-Panel | RPi Pin  | Function  |
@@ -71,6 +74,13 @@ DHT11 or DHT22 5V temperature and humidity sensor for indoor use.
 
 Needed libs: ...
 
+### USB RFID reader
+
+![usb rfid reader](/doc/rfid_hid_usb_reader.jpg)!
+
+USB RFID reader for Mifare and ISO 14443A, working as USB HID device
+
+*Warning:* Needs at minimum a power level of 4.90 VDC contantly, otherwise reader will disconnect and reconnect (with annoying beep sounds) infrequently!
 
 ## License
 
