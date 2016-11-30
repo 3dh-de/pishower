@@ -25,12 +25,12 @@ def fadeMessage(msg, seconds=2.5, f=TINY_FONT):
 
     for intensity in range(8):
         device.brightness(intensity)
-        time.sleep(0.150)
-    time.sleep(3.05)
+        time.sleep(0.050)
+    time.sleep(2.50)
 
     for intensity in range(8):
         device.brightness(7 - intensity)
-        time.sleep(0.150)
+        time.sleep(0.050)
     return
 
 try:
@@ -39,13 +39,13 @@ try:
     while True:
         msg = u'{0}'.format(time.strftime('%H:%M'))
         fadeMessage(msg, 2.5, TINY_FONT)
-        time.sleep(1.0)
+        time.sleep(0.5)
 
         humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
         if humidity is not None and temperature is not None:
             msg = u'{0:0.0f}c {1:0.0f}%'.format(temperature, humidity)
             fadeMessage(msg, 2.5, TINY_FONT)
-            time.sleep(1.0)
+            time.sleep(0.5)
 
 # Abbruch durch Taste Strg-C
 except KeyboardInterrupt:
