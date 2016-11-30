@@ -1,0 +1,18 @@
+apt-get install python-smbus i2c-tools
+apt-get install vim mc screen
+apt-get install python-dev
+apt-get install python-rpi.gpio
+apt-get install python-dev python-pip
+apt-get install git
+apt-get install build-essential python-dev python-openssl
+apt-get install sqlite3
+apt-get install python-evdev
+apt-get install python-dev python-pip gcc
+apt-get install raspberrypi-kernel-headers
+pip install max7219
+pip install spidev
+pip install w1thermsensor
+pip install evdev
+pip install flake8
+pip install sqlalchemy
+pip install Flask-SqlAlchemy
