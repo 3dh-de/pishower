@@ -16,3 +16,4 @@ pip install evdev
 pip install flake8
 pip install sqlalchemy
 pip install Flask-SqlAlchemy
+pip install typing

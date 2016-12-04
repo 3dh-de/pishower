@@ -15,8 +15,8 @@ sensor_args = {'11': Adafruit_DHT.DHT11,
                '2302': Adafruit_DHT.AM2302}
 
 sensor = sensor_args['11']
-pin = 4
-
+pin = 18
+sensor_correction = 1.0
 
 def fadeMessage(msg, seconds=2.5, f=TINY_FONT):
     """ display given message string by fading in and out the brightness """
@@ -42,6 +42,7 @@ try:
         time.sleep(0.5)
 
         humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
+        temperature += sensor_correction
         if humidity is not None and temperature is not None:
             msg = u'{0:0.0f}c {1:0.0f}%'.format(temperature, humidity)
             fadeMessage(msg, 2.5, TINY_FONT)
