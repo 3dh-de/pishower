@@ -74,7 +74,21 @@ DHT11 or DHT22 5V temperature and humidity sensor for indoor use.
 
 Needed libs: ...
 
-### USB RFID reader
+### Temperature sensor DS18B20
+
+![ds18b20](/doc/ds18b20.jpg)!
+
+DS18B20 3.3V temperature sensor for indoor and outdoor use.
+
+| LED-Panel | RPi Pin  | Function  |
+|:---------:|:--------:|-----------|
+|VCC        | 1        | 3.3V+     | 
+|GND        | 14/20/25 | GND       |
+|DATA       | 7        | GPIO 4    |
+
+Needed libs: ...
+
+#### USB RFID reader
 
 ![usb rfid reader](/doc/rfid_hid_usb_reader.jpg)!
 
