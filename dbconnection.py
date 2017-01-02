@@ -2,14 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sqlite3
-import logging
-
-# set up logging to file - see previous section for more details
-logging.basicConfig(
-    level=logging.DEBUG, datefmt='%d.%m. %H:%M:%S',
-    format='%(asctime)s %(levelname)-8s %(message)s')
-
-logger = logging.getLogger()
+from pishowerutils import logger
 
 
 class DBConnection:
