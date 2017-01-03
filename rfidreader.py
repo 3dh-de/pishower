@@ -8,6 +8,7 @@ class UsbRfidReader:
     """ Class for reading out RFID transponders via USB HID readers """
 
     __inputDevice = None
+    __deviceOpenRetries = 0
     __minCodeLength = 8
     __scancodes = {
         # Scancode: ASCIICode
@@ -37,11 +38,14 @@ class UsbRfidReader:
         try:
             self.close()
             self.__inputDevice = InputDevice(self.__inputDevicePath)
+            self.__deviceOpenRetries = 0
             time.sleep(1.0)     # prevent timing issues
             logger.debug('Opened RFID reader device \'{0}\''.format(self.__inputDevicePath))
         except:
-            logger.error('Unable to open USB RFID reader \'{0}\'!'.format(self.__inputDevicePath))
+            if self.__deviceOpenRetries < 1:
+                logger.error('Unable to open USB RFID reader \'{0}\'!'.format(self.__inputDevicePath))
             self.__inputDevice = None
+            self.__deviceOpenRetries += 1
 
     def close(self):
         """ Close the input device and wait 1 second """
@@ -69,22 +73,22 @@ class UsbRfidReader:
                 if event is None and code == '':
                     # There are blank events in between characters, so we don't want
                     # to break if we've started reading them
-                    return None  # start a new read.
-                if event is not None:
-                    if event.type == ecodes.EV_KEY:
-                        data = categorize(event)
-                        # catch only keyup, and not Enter
-                        if data.keystate == 0 and data.scancode != 42:
-                            if data.scancode == 28:
-                                # looking return key to be pressed
-                                if len(code) < self.__minCodeLength:
-                                    logger.warn('ignoring to small code: {0}'.format(code))
-                                    return None
-                                else:
-                                    logger.debug('code read: \'{0}\''.format(code))
-                                    return code
-                            else:
-                                code += self.__scancodes[data.scancode]
+                    break  # start a new read.
+                if event is None or event.type != ecodes.EV_KEY:
+                    continue
+                data = categorize(event)
+                # catch only keyup, and not Enter
+                if data.keystate == 0 and data.scancode != 42:
+                    if data.scancode == 28:
+                        # looking return key to be pressed
+                        if len(code) < self.__minCodeLength:
+                            logger.warn('ignoring to small code: {0}'.format(code))
+                            break
+                        else:
+                            logger.debug('code read: \'{0}\''.format(code))
+                            return code
+                    else:
+                        code += self.__scancodes[data.scancode]
         except:
             logger.error('Parsing input stream failed!')
             self.close()
