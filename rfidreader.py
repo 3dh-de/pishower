@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from evdev import InputDevice, categorize, ecodes
 from pishowerutils import logger
@@ -24,70 +24,88 @@ class UsbRfidReader:
 
     def __init__(self, inputEvent='/dev/input/event0', minCodeLength=8):
         """ Init the input device object """
+        self.__minCodeLength = minCodeLength
+        self.__inputDevicePath = inputEvent
+        self.open()
+
+    def __del__(self):
+        """ Destroy class and handle for input device """
+        self.close()
+
+    def open(self):
+        """ Open the input device object for reading """
         try:
-            self.__minCodeLength = minCodeLength
-            self.__inputDevice = InputDevice(inputEvent)
-            logger.debug("Opened RFID reader device '{0}'".format(inputEvent)) 
+            self.close()
+            self.__inputDevice = InputDevice(self.__inputDevicePath)
+            time.sleep(1.0)     # prevent timing issues
+            logger.debug('Opened RFID reader device \'{0}\''.format(self.__inputDevicePath))
         except:
-            logger.error("Unable to open USB RFID reader '{0}'!".format(inputEvent))
+            logger.error('Unable to open USB RFID reader \'{0}\'!'.format(self.__inputDevicePath))
             self.__inputDevice = None
 
-    def __teardown__(self):
-        """ Close the input device """
-        if self.__inputDevice is not None:
+    def close(self):
+        """ Close the input device and wait 1 second """
+        try:
+            if self.__inputDevice is None:
+                return
             self.__inputDevice.close()
+            self.__inputDevice = None
+            time.sleep(1.0)     # prevent timing issues
+        except:
+            logger.warning('Error while closing RFID input device!')
+        else:
+            logger.debug('RFID input device closed')
 
     def readCode(self):
         """ Try reading a code from the input device and return it as string """
         if self.__inputDevice is None:
-            logger.error("No USB RFID reader found!")
-            return None
-
+            self.open()
+            if self.__inputDevice is None:
+                return None
         code = ''
-        while True:
-            event = self.__inputDevice.read_one()
-            if event is None and code == '':
-                # There are blank events in between characters, so we don't want
-                # to break if we've started reading them
-                break  # start a new read. 
-            try:
+        try:
+            while True:
+                event = self.__inputDevice.read_one()
+                if event is None and code == '':
+                    # There are blank events in between characters, so we don't want
+                    # to break if we've started reading them
+                    return None  # start a new read.
                 if event is not None:
                     if event.type == ecodes.EV_KEY:
                         data = categorize(event)
-                        # catch only keyup, and not Enter   
+                        # catch only keyup, and not Enter
                         if data.keystate == 0 and data.scancode != 42:
                             if data.scancode == 28:
                                 # looking return key to be pressed
                                 if len(code) < self.__minCodeLength:
-                                    logger.warn("ignoring to small code: {0}".format(code))
+                                    logger.warn('ignoring to small code: {0}'.format(code))
                                     return None
                                 else:
-                                    logger.debug("code read: '{0}'".format(code))
+                                    logger.debug('code read: \'{0}\''.format(code))
                                     return code
                             else:
                                 code += self.__scancodes[data.scancode]
-            except AttributeError:
-                logger.error("Parsing input stream failed!")
-                break
-            except:
-                logger.error("Code reading failed!")
-                break
+        except:
+            logger.error('Parsing input stream failed!')
+            self.close()
         return None
 
 
 # command line execution
-if __name__ == "__main__":
+if __name__ == '__main__':
     import time
+    import sys
 
     rfidReader = UsbRfidReader('/dev/input/event2', 10)
     while True:
         try:
             code = rfidReader.readCode()
             if code is not None:
-                logger.debug("result: '{0}'".format(code))
+                logger.debug('found a code: \'{0}\''.format(code))
             time.sleep(0.5)
         except KeyboardInterrupt:
-            break
+            logger.debug('Key pressed - finishing now...')
+            sys.exit(0)
         except:
-            logger.error("Reading aborted!")
-            break
+            logger.error('Unknown error received. Reading aborted!')
+            time.sleep(2)
