@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import glob
 import time
@@ -62,12 +63,12 @@ class UsbRfidReader:
         Tries to open the device path given to the constructor
         or search for all available input event devices.
         """
-        devicePaths = []
+        device_paths = []
         if len(self.__inputDevicePath):
-            devicePaths = ["{0}".format(self.__inputDevicePath)]
+            device_paths = ["{0}".format(self.__inputDevicePath)]
         else:
-            devicePaths = glob.glob('/dev/input/event*')  # search all available devices
-        for path in devicePaths:
+            device_paths = glob.glob('/dev/input/event*')  # search all available devices
+        for path in device_paths:
             try:
                 self.close()
                 self.__inputDevice = InputDevice(path)
@@ -93,21 +94,21 @@ class UsbRfidReader:
         except:
             logger.warning('Error while closing RFID input device!')
 
-    def isOpen(self):
+    def is_open(self):
         """ Returns True, if connection to RFID reader is open """
         return self.__inputDevice is not None
 
-    def readCode(self):
+    def readline(self):
         """ Try reading a code from the input device and return it as string """
         if self.__inputDevice is None:
             self.open()
             if self.__inputDevice is None:
                 return None
-        code = ''
+        line = ''
         try:
             while True:
                 event = self.__inputDevice.read_one()
-                if event is None and code == '':
+                if event is None and line == '':
                     # There are blank events in between characters, so we don't want
                     # to break if we've started reading them
                     break  # start a new read.
@@ -118,14 +119,14 @@ class UsbRfidReader:
                 if data.keystate == 0 and data.scancode != 42:
                     if data.scancode == 28:
                         # looking return key to be pressed
-                        if len(code) < self.__minCodeLength:
-                            logger.warning('ignoring to small code: {0}'.format(code))
+                        if len(line) < self.__minCodeLength:
+                            logger.warning('ignoring to small code: {0}'.format(line))
                             break
                         else:
-                            logger.debug('code read: \'{0}\''.format(code))
-                            return code
+                            logger.debug('code read: \'{0}\''.format(line))
+                            return line
                     else:
-                        code += self.__scancodes[data.scancode]
+                        line += self.__scancodes[data.scancode]
         except:
             logger.error('Parsing input stream failed!')
             self.close()
@@ -137,7 +138,7 @@ if __name__ == '__main__':
     rfidReader = UsbRfidReader('/dev/input/event2', 10)
     while True:
         try:
-            code = rfidReader.readCode()
+            code = rfidReader.readline()
             if code is not None:
                 logger.debug('found a code: \'{0}\''.format(code))
             time.sleep(0.5)

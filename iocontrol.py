@@ -32,7 +32,7 @@ class RelayControl:
         """ Clear GPIO interface """
         GPIO.cleanup()
 
-    def toggleOutput(self, port, value=-1):
+    def toggle_output(self, port, value=-1):
         if value is -1:
             value = GPIO.input(port)
             logger.debug('toggle port from "{}"'.format(value))
@@ -55,13 +55,13 @@ if __name__ == '__main__':
     try:
         control = RelayControl([relay1, relay2])
         time.sleep(2.0)
-        control.toggleOutput(relay1)
+        control.toggle_output(relay1)
         time.sleep(2.0)
-        control.toggleOutput(relay2)
+        control.toggle_output(relay2)
         time.sleep(2.0)
-        control.toggleOutput(relay2, False)
+        control.toggle_output(relay2, False)
         time.sleep(2.0)
-        control.toggleOutput(relay2, True)
+        control.toggle_output(relay2, True)
         time.sleep(2.0)
     except KeyboardInterrupt:
         logger.debug('Key pressed - finishing now...')

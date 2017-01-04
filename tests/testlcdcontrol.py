@@ -23,7 +23,7 @@ class TestLcdControl(unittest.TestCase):
         self.display = None
         self.display = LcdControl()
         self.assertIsNotNone(self.display,      'display object cannot be initialized!')
-        self.assertTrue(self.display.isOpen(),  'RFID display cannot be opened!')
+        self.assertTrue(self.display.is_open(), 'RFID display cannot be opened!')
 
     def test_show(self):
         self.assertIsNotNone(self.display,      'display object cannot be initialized!')
@@ -45,10 +45,10 @@ class TestLcdControl(unittest.TestCase):
         self.assertIsNotNone(self.display,      'display object cannot be initialized!')
 
         self.display.close()
-        self.assertFalse(self.display.isOpen(), 'display cannot be closed!')
+        self.assertFalse(self.display.is_open(), 'display cannot be closed!')
 
         self.display.show('Reopened!', 2)
-        self.assertTrue(self.display.isOpen(),  'display cannot be reopened!')
+        self.assertTrue(self.display.is_open(), 'display cannot be reopened!')
 
     def tearDown(self):
         if self.display:

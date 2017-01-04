@@ -54,7 +54,7 @@ class LcdControl:
         except:
             logger.warning('Error while closing lcd device!')
 
-    def isOpen(self):
+    def is_open(self):
         """ Returns True, if connection to LCD device is open """
         return self.__outputDevice is not None
 

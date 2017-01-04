@@ -1,8 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os, sys, time
 from temperaturesensor import TemperatureSensor
+from pishowerutils import logger
 
 
 class DS18B20(TemperatureSensor):
@@ -11,18 +12,16 @@ class DS18B20(TemperatureSensor):
     __sensors = []
     currentSensor = None
 
-    def __init__(self, sensorId=""):
+    def __init__(self, sensorId=''):
         """ Check for 1wire drivers and setup sensor connection """
-        self.__updateSensors()
-        if sensorId is not "" and sensorId in self.__sensors:
+        TemperatureSensor.__init__(self)
+        self.__update_sensors()
+        if sensorId is not '' and sensorId in self.__sensors:
             self.currentSensor = sensorId
         else:
             self.currentSensor = self.__sensors[0]
 
-    def __teardown__(self):
-        return
-
-    def __updateSensors(self):
+    def __update_sensors(self):
         """ Check for 1wire drivers and read available sensors """
         try:
             # open 1-wire slaves list to read sensor ids
@@ -31,20 +30,19 @@ class DS18B20(TemperatureSensor):
             file.close()
             self.__sensors = w1_slaves
             if w1_slaves[0] is None:
-                print("warning: no sensors found!")
+                logger.warning('no 1-wire sensors found!')
             else:
                 for s in w1_slaves:
-                    print("sensor found:  {}".format(s))
+                    logger.debug('sensor found:  {}'.format(s))
         except:
-            print("error: unable to read 1-wire device list!")
-            pass
+            logger.error('Unable to read 1-wire device list!')
 
-    def availableSensors(self):
+    def available_sensors(self):
         """ Update available sensors and return their ids """
-        self.__updateSensors()
+        self.__update_sensors()
         return self.__sensors
 
-    def currentCelsius(self):
+    def current_celsius(self):
         # type: () -> float
         """ Return current sensor value in Celsius degrees """
         temperature = None
@@ -55,41 +53,37 @@ class DS18B20(TemperatureSensor):
             file.close()
 
             if filecontent:
-                stringvalue = filecontent.split("\n")[1].split(" ")[9]
+                stringvalue = filecontent.split('\n')[1].split(' ')[9]
                 temperature = float(stringvalue[2:]) / 1000
                 if temperature:
                     self.__lastCelsius = temperature
                     return float(temperature)
         except:
-            # failed reading sensor
-            pass
-        if temperature is None:
-            return -0.0
-        return float(temperature)
+            pass  # failed reading sensor
+        return float(temperature) if temperature is not None else -0.0
 
-    def currentFahrenheit(self):
+    def current_fahrenheit(self):
         # type: () -> float
         """ Return current sensor value in Fahrenheit degrees """
-        temperature = self.currentCelsius()
+        temperature = self.current_celsius()
         return float(temperature) * 9.0/5.0 + 32.0
 
 
-schleifenZaehler = 0
-schleifenAnzahl = 20
-schleifenPause = 1
+# command line execution
+if __name__ == '__main__':
+    sensor = DS18B20()
 
-sensor = DS18B20()
+    logger.debug('sensors found: {0}'.format(sensor.available_sensors()))
 
-print("sensors found: ", sensor.availableSensors())
-
-print("Temperaturabfrage für ", schleifenAnzahl, \
-      " Messungen alle ", schleifenPause, " Sekunden gestartet")
-
-while True:
-    print("Aktuelle Temperatur : {0}  {1}\r" \
-            .format(sensor.currentCelsiusStr(), sensor.currentFahrenheitStr()))
-    sys.stdout.flush()
-    time.sleep(schleifenPause)
-    schleifenZaehler = schleifenZaehler + 1
-
-print("Temperaturabfrage beendet")
+    while True:
+        try:
+            logger.debug('Temperature : {0}  {1}\r' \
+                         .format(sensor.current_celsius_str(), sensor.current_fahrenheit_str()))
+            sys.stdout.flush()
+            time.sleep(2.0)
+        except KeyboardInterrupt:
+            logger.debug('Key pressed - finishing now...')
+            break
+        except:
+            logger.error('Unknown error received. Reading aborted!')
+            break

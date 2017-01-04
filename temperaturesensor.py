@@ -13,13 +13,13 @@ class TemperatureSensor:
         return
 
     @abstractmethod
-    def currentCelsius(self):
+    def current_celsius(self):
         # type: () -> float:
         """ Read sensor and return value in Celsius degrees """
         return 0.0
 
     @abstractmethod
-    def currentFahrenheit(self):
+    def current_fahrenheit(self):
         # type: () -> float:
         """ Read sensor and return value in Fahrenheit degrees """
         return 0.0
@@ -29,16 +29,16 @@ class TemperatureSensor:
         """ Read relative humidity in percent """
         return 0.0
 
-    def currentCelsiusStr(self):
+    def current_celsius_str(self):
         """ Return string value with Celsius degrees """
-        temperature = self.currentCelsius()
+        temperature = self.current_celsius()
         if temperature is None:
             return ''
         return '{:2.2f} °C'.format(float(temperature))
 
-    def currentFahrenheitStr(self):
+    def current_fahrenheit_str(self):
         """ Return string value with Fahrenheit degrees """
-        temperature = self.currentFahrenheit()
+        temperature = self.current_fahrenheit()
         if temperature is None:
             return ''
-        return '{:3.2f} °F'.format(float(self.currentFahrenheit()))
+        return '{:3.2f} °F'.format(float(self.current_fahrenheit()))

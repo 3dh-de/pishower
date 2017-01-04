@@ -21,7 +21,7 @@ class TestRfidReader(unittest.TestCase):
         self.reader = None
         self.reader = UsbRfidReader()
         self.assertIsNotNone(self.reader,       'reader object cannot be initialized!')
-        self.assertTrue(self.reader.isOpen(),   'RFID reader cannot be opened!')
+        self.assertTrue(self.reader.is_open(), 'RFID reader cannot be opened!')
 
     def test_read(self):
         self.assertIsNotNone(self.reader,       'reader object cannot be initialized!')
@@ -29,7 +29,7 @@ class TestRfidReader(unittest.TestCase):
         code = None
         try:
             logger.debug('reading code...')
-            code = self.reader.readCode()
+            code = self.reader.readline()
         except:
             self.fail('error during reading code!')
 
@@ -37,10 +37,10 @@ class TestRfidReader(unittest.TestCase):
         self.assertIsNotNone(self.reader,       'reader object cannot be initialized!')
 
         self.reader.close()
-        self.assertFalse(self.reader.isOpen(),  'RFID reader cannot be closed!')
+        self.assertFalse(self.reader.is_open(), 'RFID reader cannot be closed!')
 
-        self.reader.readCode()
-        self.assertTrue(self.reader.isOpen(),   'RFID reader cannot be reopened!')
+        self.reader.readline()
+        self.assertTrue(self.reader.is_open(), 'RFID reader cannot be reopened!')
 
     def tearDown(self):
         if self.reader:
