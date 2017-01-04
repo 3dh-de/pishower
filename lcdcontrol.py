@@ -58,6 +58,15 @@ class LcdControl:
         """ Returns True, if connection to LCD device is open """
         return self.__outputDevice is not None
 
+    def backlight(self, on=True):
+        """ Switch LCD backlight on/off """
+        try:
+            if self.__outputDevice is not None:
+                self.__outputDevice.lcd_backlight('ON' if on else 'OFF')
+        except:
+            logger.error('Switching display backlight failed!')
+            self.close()
+
     def clear(self):
         """ Clears all text from LCD """
         try:
@@ -83,11 +92,18 @@ class LcdControl:
 if __name__ == '__main__':
     try:
         display = LcdControl()
+
+        display.backlight(False)
+        time.sleep(2.0)
+        display.backlight()
+
         display.show('Duschzeit   5min', 1)
         display.show('>>> Pruefe Karte', 2)
         time.sleep(2.0)
+
         display.show('>>> Karte OK <<<', 2)
         time.sleep(2.0)
+
         display.close()
         display.show('Restart OK', 1)
     except KeyboardInterrupt:

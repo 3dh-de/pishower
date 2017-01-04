@@ -3,6 +3,7 @@
 import os
 import sys
 import unittest
+import time
 
 scriptPath = os.path.realpath(os.path.dirname(sys.argv[0]))
 os.chdir(scriptPath)
@@ -30,8 +31,13 @@ class TestLcdControl(unittest.TestCase):
         try:
             logger.debug('displaying text...')
             self.display.clear()
+
             self.display.show('Hello World! #1', 1)
             self.display.show('Hello World! #2', 2)
+
+            self.display.backlight(False)
+            time.sleep(1)
+            self.display.backlight()
         except:
             self.fail('error during showing text!')
 
