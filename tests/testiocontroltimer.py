@@ -1,22 +1,14 @@
 #!/usr/bin/python
 
+import unittest
 import os
 import sys
 scriptPath = os.path.realpath(os.path.dirname(sys.argv[0]))
 os.chdir(scriptPath)
 sys.path.append("../")
 
-import logging
-import unittest
+from pishowerutils import logger
 import iocontroltimer as timer
-
-# set up logging to file - see previous section for more details
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-    datefmt='%d.%m. %H:%M:%S')
-
-logger = logging.getLogger()
 
 
 # Control a IO control timer
