@@ -94,7 +94,7 @@ class UsbRfidReader:
             logger.warning('Error while closing RFID input device!')
 
     def isOpen(self):
-        """ Returns True, if RFID reader is open """
+        """ Returns True, if connection to RFID reader is open """
         return self.__inputDevice is not None
 
     def readCode(self):

@@ -11,7 +11,7 @@ sys.path.append("../")
 from rfidreader import UsbRfidReader
 from pishowerutils import logger
 
-# Control a IO control timer
+# Control an USB RFID reader
 class TestRfidReader(unittest.TestCase):
     reader = None
 
