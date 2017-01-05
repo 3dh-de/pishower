@@ -97,15 +97,16 @@ if __name__ == '__main__':
         time.sleep(2.0)
         display.backlight()
 
+        display.close()
+        display.show('Restart OK', 1)
+        time.sleep(2.0)
+
         display.show('Duschzeit   5min', 1)
         display.show('>>> Pruefe Karte', 2)
         time.sleep(2.0)
 
         display.show('>>> Karte OK <<<', 2)
         time.sleep(2.0)
-
-        display.close()
-        display.show('Restart OK', 1)
     except KeyboardInterrupt:
         logger.debug('Key pressed - finishing now...')
     except:
