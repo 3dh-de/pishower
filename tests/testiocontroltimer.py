@@ -16,7 +16,7 @@ class TestIOControlTimer(unittest.TestCase):
     control = None
 
     def setUp(self):
-        self.control = timer.IOControlTimer(10)
+        self.control = timer.IOControlTimer(5)
         logger.debug('timer init for {} seconds'.format(self.control.timeoutSeconds))
 
     def test_start(self):
@@ -35,7 +35,7 @@ class TestIOControlTimer(unittest.TestCase):
         self.assertEqual(self.control.is_finished(), False, 'finished flag invalid after stop!')
 
     def test_reset(self):
-        self.timeoutSeconds = 60
+        self.timeoutSeconds = 7
         self.control.reset()
         self.assertEqual(self.control.is_active(), True, 'timer is not resetted correctly!')
 
@@ -45,8 +45,13 @@ class TestIOControlTimer(unittest.TestCase):
     def test_is_finished(self):
         self.assertEqual(self.control.is_finished(), False, 'finished flag invalid after reset!')
 
-    def test_handleTimeout(self):
-        pass
+    def test_handle_timeout(self):
+        event = self.control.timeoutEvent
+        self.control.start()
+        self.assertTrue(self.control.is_active(), 'starting timer failed')
+        self.assertFalse(event.wait(1.0), 'timeout event failed for too small timeout')
+        self.assertTrue(event.wait(9.0), 'timeout event failed within timeout')
+        self.assertTrue(event.is_set(), 'timeout event state is invalid')
 
     def tearDown(self):
         self.control = None
