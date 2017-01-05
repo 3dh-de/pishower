@@ -7,21 +7,34 @@ from pishowerutils import logger
 
 
 class IOControlTimer:
-    """ Timer to exec I/O actions after x seconds """
-    timeoutSeconds = 420    # 7min
+    """
+    Timer to exec I/O actions after x seconds
+
+    After start() a timer runs for the given seconds and executes
+    _handle_timeout() at the scheduled time. Then the event
+    'timeoutEvent' is set and the state is set to finished -
+    checkable by is__finished().
+
+    While the timer is running is_active() returns True and
+    the timer can be stopped by stop() or restart().
+    """
+    timeoutSeconds = 420                # timeout in 7min after start
+    timeoutEvent = threading.Event()    # event object to signal the timeout
     _finished = False
     _timer = None
 
     def __init__(self, seconds=420):
+        """ Init the timer """
         self.timeoutSeconds = seconds
         self._finished = False
         logger.debug('timer init for {} seconds'.format(seconds))
 
     def __del__(self):
+        """ Ensure the timer is stopped """
         self.stop()
 
     def start(self):
-        """ Starts the timer thread to execute _handle_timeout() """
+        """ Starts the timer thread to execute _handle_timeout() and trigger the timeoutEvent """
         if self._timer is not None:
             if self._timer.is_alive():
                 logger.warning('timer is already running!'
@@ -39,6 +52,8 @@ class IOControlTimer:
             self._timer.cancel()
             self._timer.join()
             self._timer = None
+        if self.timeoutEvent.is_set():
+            self.timeoutEvent.clear()
 
         self._finished = False
         logger.info('timer stopped')
@@ -51,14 +66,15 @@ class IOControlTimer:
 
     def is_active(self):
         """ Returns True, if timer thread is running """
-        return self._timer is not None and self._timer.is_alive()
+        return self._timer and self._timer.is_alive()
 
     def is_finished(self):
         """ Returns True, if timer was executed successfully """
         return self._finished
 
     def _handle_timeout(self):
-        """ Worker method to execute commands on timeout """
+        """ Worker method to set the timeoutEvent and execute commands on timeout """
+        self.timeoutEvent.set()
         self._finished = True
         logger.debug('timeout reached!')
 
@@ -75,8 +91,8 @@ if __name__ == "__main__":
     controlTimer = IOControlTimer(5)
     controlTimer.start()
 
-    while True:
-        if controlTimer.is_finished():
-            sys.exit(0)
+    event = controlTimer.timeoutEvent
 
-        time.sleep(0.1)
+    while True:
+        if event.wait(0.1):
+            sys.exit(0)
