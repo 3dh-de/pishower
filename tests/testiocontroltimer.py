@@ -31,19 +31,19 @@ class TestIOControlTimer(unittest.TestCase):
 
         self.control.stop()
 
-        self.assertEqual(self.control.isActive(),   False, 'timer is not stopped correctly!')
-        self.assertEqual(self.control.isFinished(), False, 'finished flag invalid after stop!')
+        self.assertEqual(self.control.is_active(), False, 'timer is not stopped correctly!')
+        self.assertEqual(self.control.is_finished(), False, 'finished flag invalid after stop!')
 
     def test_reset(self):
         self.timeoutSeconds = 60
         self.control.reset()
-        self.assertEqual(self.control.isActive(),   True, 'timer is not resetted correctly!')
+        self.assertEqual(self.control.is_active(), True, 'timer is not resetted correctly!')
 
-    def test_isActive(self):
-        self.assertEqual(self.control.isActive(),   True, 'timer state is invalid!')
+    def test_is_active(self):
+        self.assertEqual(self.control.is_active(), True, 'timer state is invalid!')
 
-    def test_isFinished(self):
-        self.assertEqual(self.control.isFinished(), False, 'finished flag invalid after reset!')
+    def test_is_finished(self):
+        self.assertEqual(self.control.is_finished(), False, 'finished flag invalid after reset!')
 
     def test_handleTimeout(self):
         pass

@@ -1,16 +1,9 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
-import time
 import threading
-import logging
-
-# set up logging to file - see previous section for more details
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-    datefmt='%d.%m. %H:%M:%S')
-
-logger = logging.getLogger()
+import time
+from pishowerutils import logger
 
 
 class IOControlTimer:
@@ -28,18 +21,20 @@ class IOControlTimer:
         self.stop()
 
     def start(self):
+        """ Starts the timer thread to execute _handle_timeout() """
         if self._timer is not None:
             if self._timer.is_alive():
                 logger.warning('timer is already running!'
                                ' cancelling timer to start new one.')
             self.stop()
 
-        self._timer = threading.Timer(self.timeoutSeconds, self._handleTimeout)
+        self._timer = threading.Timer(self.timeoutSeconds, self._handle_timeout)
         self._timer.start()
 
         logger.info('timer started')
 
     def stop(self):
+        """ Stop the timer thread """
         if self._timer is not None:
             self._timer.cancel()
             self._timer.join()
@@ -49,17 +44,21 @@ class IOControlTimer:
         logger.info('timer stopped')
 
     def reset(self):
+        """ Stops and starts the timer thread """
         self.stop()
         self.start()
         logger.info('timer resetted')
 
-    def isActive(self):
+    def is_active(self):
+        """ Returns True, if timer thread is running """
         return self._timer is not None and self._timer.is_alive()
 
-    def isFinished(self):
+    def is_finished(self):
+        """ Returns True, if timer was executed successfully """
         return self._finished
 
-    def _handleTimeout(self):
+    def _handle_timeout(self):
+        """ Worker method to execute commands on timeout """
         self._finished = True
         logger.debug('timeout reached!')
 
@@ -77,8 +76,7 @@ if __name__ == "__main__":
     controlTimer.start()
 
     while True:
-        if controlTimer.isFinished():
+        if controlTimer.is_finished():
             sys.exit(0)
 
         time.sleep(0.1)
-

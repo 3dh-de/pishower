@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os, sys, time
+import os
+import sys
+import time
 from temperaturesensor import TemperatureSensor
 from pishowerutils import logger
 
