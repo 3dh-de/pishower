@@ -4,7 +4,7 @@ Raspberry Pi based shower control for time based switching of showers or other d
 
 Originally this project was founded to control the access/usage of my Dojo's shower cabins to only allow paid members and to prevent fraud.
 
-A german blog entry to this project and its aims can be found in my blog [[http://3dh.de]].
+A german blog entry to this project and its aims can be found in my blog http://3dh.de.
 
 ## License
 
