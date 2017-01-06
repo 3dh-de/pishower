@@ -4,6 +4,10 @@ Raspberry Pi based shower control for time based switching of showers or other d
 
 Originally this project was founded to control the access/usage of my Dojo's shower cabins to only allow paid members and to prevent fraud.
 
+## License
+
+All documents in this repository are free for private and commercial use, licensed under the MIT License - see LICENSE.md.
+
 ## Requirements
 
 1x Raspberry Pi 1 or newer with Raspbian (Debian Jessie or newer) and Python 2.7 installed  
