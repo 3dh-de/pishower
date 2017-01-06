@@ -3,6 +3,7 @@
 import unittest
 import os
 import sys
+import time
 scriptPath = os.path.realpath(os.path.dirname(sys.argv[0]))
 os.chdir(scriptPath)
 sys.path.append("../")
@@ -17,38 +18,36 @@ class TestIOControlTimer(unittest.TestCase):
 
     def setUp(self):
         self.control = timer.IOControlTimer(5)
-        logger.debug('timer init for {} seconds'.format(self.control.timeoutSeconds))
 
     def test_start(self):
-        self.assertEqual(self.control._timer,        None, 'timer is not empty after init!')
+        self.assertIsNone(self.control._timer,      'timer is not empty after init!')
 
         self.control.start()
-
-        self.assertNotEqual(self.control._timer,     None, 'timer is still empty after start!')
-
-    def test_stop(self):
-        self.assertNotEqual(self.control._timer,     None, 'timer is not initialized after start!')
+        self.assertIsNotNone(self.control._timer,   'timer is still empty after start!')
 
         self.control.stop()
+        self.assertFalse(self.control.is_active(),  'timer is not stopped correctly!')
+        self.assertFalse(self.control.is_finished(),'finished flag invalid after stop!')
 
-        self.assertEqual(self.control.is_active(), False, 'timer is not stopped correctly!')
-        self.assertEqual(self.control.is_finished(), False, 'finished flag invalid after stop!')
-
-    def test_reset(self):
         self.timeoutSeconds = 7
         self.control.reset()
-        self.assertEqual(self.control.is_active(), True, 'timer is not resetted correctly!')
-
-    def test_is_active(self):
-        self.assertEqual(self.control.is_active(), True, 'timer state is invalid!')
-
-    def test_is_finished(self):
-        self.assertEqual(self.control.is_finished(), False, 'finished flag invalid after reset!')
+        time.sleep(0.5)
+        self.assertTrue(self.control.is_active(),   'timer is not resetted correctly!')
+        self.assertFalse(self.control.is_finished(),'finished flag invalid after reset!')
+        time.sleep(8.0)
+        self.assertFalse(self.control.is_active(),  'invalid active state after timeout')
+        self.assertTrue(self.control.is_finished(), 'invalid finished flag after timeout!')
 
     def test_handle_timeout(self):
-        event = self.control.timeoutEvent
-        self.control.start()
-        self.assertTrue(self.control.is_active(), 'starting timer failed')
+        control2 = timer.IOControlTimer(8)
+
+        event = control2.timeoutEvent
+        logger.debug('restarting timer for event test...')
+        control2.reset()
+        time.sleep(0.5)
+        logger.debug('restarted timer for event test')
+
+        self.assertTrue(control2.is_active(), 'starting timer failed')
         self.assertFalse(event.wait(1.0), 'timeout event failed for too small timeout')
         self.assertTrue(event.wait(9.0), 'timeout event failed within timeout')
         self.assertTrue(event.is_set(), 'timeout event state is invalid')

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import threading
-import time
 from pishowerutils import logger
 
 
@@ -48,9 +47,11 @@ class IOControlTimer:
 
     def stop(self):
         """ Stop the timer thread """
-        if self._timer is not None:
-            self._timer.cancel()
-            self._timer.join()
+        if self._timer:
+            if self._timer.is_alive():
+                self._timer.cancel()
+                self._timer.join()
+                logger.debug('cancelled timer')
             self._timer = None
         if self.timeoutEvent.is_set():
             self.timeoutEvent.clear()
