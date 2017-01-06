@@ -42,8 +42,8 @@ class PiShowerMain(Thread):
         """ Init card reader, display and I/O controls """
         Thread.__init__(self)
         try:
-            if shower_seconds < 60:
-                logger.error('invalid shower time given! time must be > 60s')
+            if shower_seconds < 30:
+                logger.error('invalid shower time given! time must be > 30s')
                 raise AttributeError()
             self.shower_id = shower_id
             self.shower_time = shower_seconds
@@ -105,39 +105,43 @@ class PiShowerMain(Thread):
             logger.debug('running main control loop...')
             self.show_message_ready()
             shower_active = False
+            start_time = None
 
             while self.__running:
+                code = self._cardReader.readline()  # codes must be read to be cleared from buffer
+
                 if shower_active:
-                    minutes_left = 0  # TODO
-                    if self._showerTimer:
+                    # a shower process was started
+                    code = None
+                    minutes_left = 0                            # TODO: add minutes left calc here
+                    if self._showerTimer is None:
+                        logger.warning('No timer found! Stopped shower process!')
+                        shower_active = False
+                        self.show_message_ready()
+                    else:
                         if not self._showerTimer.is_finished():
                             self.show_message_processing(minutes_left)
                         else:
+                            logger.debug('stopped shower process on timeout')
                             shower_active = False
                             self.show_message_stop()
                             if self._relays:
                                 self._relays.toggle_output(self._gpio_cold_water, False)
                                 self._relays.toggle_output(self._gpio_warm_water, False)
-                            time.sleep(30.0)
+                            time.sleep(6.0)
                             self.show_message_ready()
-                    else:
-                        shower_active = False
-                        self.show_message_ready()
-                else:
-                    code = self._cardReader.readline()
-
-                if code is not None:
-                    logger.debug('found a code: \'{0}\''.format(code))
+                elif code is not None:
+                    # wait for request to start new shower process
+                    logger.debug('found a code: \'{0}\''.format(code))    # TODO: add validator here
                     self.show_message_processing(self.shower_time//60)
+                    shower_active = True
                     if self._relays:
                         self._relays.toggle_output(self._gpio_cold_water, True)
                         self._relays.toggle_output(self._gpio_warm_water, True)
                     if self._showerTimer:
                         self._showerTimer.start()
-                        shower_active = True
-                    time.sleep(30.0)
-                else:
-                    time.sleep(0.2)
+
+                time.sleep(0.2)
 
             logger.debug('stopping main control loop...')
         except Exception as error:
@@ -167,7 +171,7 @@ class PiShowerMain(Thread):
 # exec tests
 if __name__ == "__main__":
     try:
-        main = PiShowerMain(1, 60)
+        main = PiShowerMain(1, 40)
         main.start()
 
         while main.is_alive():
