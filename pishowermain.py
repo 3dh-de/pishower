@@ -82,7 +82,7 @@ class PiShowerMain:
 
     def is_active(self):
         """ Returns true, while main control thread is running """
-        return False
+        return True
 
 
 # exec tests
@@ -94,9 +94,9 @@ if __name__ == "__main__":
         while main.is_active():
             time.sleep(0.2)
 
-        time.sleep(3.0)
-
+    except KeyboardInterrupt:
+        logger.debug('Key pressed - finishing now...')
         main.stop()
     except:
-        logger.error('error in main control')
+        logger.error('Error in main control!')
         quit(-1)
