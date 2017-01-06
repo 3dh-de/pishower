@@ -4,6 +4,8 @@ Raspberry Pi based shower control for time based switching of showers or other d
 
 Originally this project was founded to control the access/usage of my Dojo's shower cabins to only allow paid members and to prevent fraud.
 
+A german blog entry to this project and its aims can be found in my blog [[http://3dh.de]].
+
 ## License
 
 All documents in this repository are free for private and commercial use, licensed under the MIT License - see LICENSE.md.
@@ -99,15 +101,3 @@ Needed libs: ...
 USB RFID reader for Mifare and ISO 14443A, working as USB HID device
 
 *Warning:* Needs at minimum a power level of 4.90 VDC contantly, otherwise reader will disconnect and reconnect (with annoying beep sounds) infrequently!
-
-## License
-
-This software is free tu use following the terms of the MIT License (MIT):
-
-Copyright (c) 2016 Christian Daehn, Germany, http://3dh.de
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
