@@ -1,13 +1,9 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-    Flaskr
-    ~~~~~~
 
-    A microblog example application written as Flask tutorial with
-    Flask and sqlite3.
-
-    :copyright: (c) 2015 by Armin Ronacher.
-    :license: BSD, see LICENSE for more details.
+""" PiShower project
+    @copyright  Christian Daehn (c) 2006, http://3dh.de
+    @license    MIT license
 """
 
 import os

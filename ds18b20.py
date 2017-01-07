@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
+""" PiShower project
+    @copyright  Christian Daehn (c) 2006, http://3dh.de
+    @license    MIT license
+"""
+
 import sys
 import time
 from temperaturesensor import TemperatureSensor
@@ -10,16 +14,16 @@ from pishowerutils import logger
 
 class DS18B20(TemperatureSensor):
     """ Class to read temperature from 1wire DS18B20 sensors """
+    currentSensor = None
     __lastCelsius = None
     __sensors = []
-    currentSensor = None
 
-    def __init__(self, sensorId=''):
+    def __init__(self, sensor_id=''):
         """ Check for 1wire drivers and setup sensor connection """
         TemperatureSensor.__init__(self)
         self.__update_sensors()
-        if sensorId is not '' and sensorId in self.__sensors:
-            self.currentSensor = sensorId
+        if sensor_id is not '' and sensor_id in self.__sensors:
+            self.currentSensor = sensor_id
         else:
             self.currentSensor = self.__sensors[0]
 

@@ -1,4 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+""" PiShower project
+    @copyright  Christian Daehn (c) 2006, http://3dh.de
+    @license    MIT license
+"""
 
 import os
 import sys
@@ -13,8 +19,8 @@ sys.path.append("../hd44780")
 from lcdcontrol import LcdControl
 from pishowerutils import logger
 
-# Control an I2C HD44780 LCD
 class TestLcdControl(unittest.TestCase):
+    """ Control an I2C HD44780 LCD """
     display = None
 
     def setUp(self):

@@ -1,4 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+""" PiShower project
+    @copyright  Christian Daehn (c) 2006, http://3dh.de
+    @license    MIT license
+"""
 
 import time
 from threading import Thread

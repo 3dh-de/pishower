@@ -1,4 +1,7 @@
-﻿import sys
+﻿# author:  https://github.com/CaptainStouf/raspberry_lcd4x20_I2C
+# license: GPL 2.0
+
+import sys
 sys.path.append("./lib")
 
 import i2c_lib

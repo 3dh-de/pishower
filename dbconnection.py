@@ -1,22 +1,26 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+""" PiShower project
+    @copyright  Christian Daehn (c) 2006, http://3dh.de
+    @license    MIT license
+"""
 
 import sqlite3
 from pishowerutils import logger
 
 
 class DBConnection:
-    """ Convenient interface for SQLite3 db
-    """
-    _dbfile = "data.db"
+    """ Convenient interface for SQLite3 db """
+    _dbfile = 'data.db'
 
-    def __init__(self, fileName="data.db"):
+    def __init__(self, fileName='data.db'):
         """ Init connection and db params """
         self._dbfile = fileName
         sqls = [
             'DROP TABLE IF EXISTS test',
             'CREATE TABLE test (i integer)',
-            'INSERT INTO "test" VALUES(99)']
+            'INSERT INTO \'test\' VALUES(99)']
         self._exec_queries(sqls)
         return
 
@@ -53,10 +57,10 @@ class DBConnection:
                 fieldStr = '{0}, {1}'.format(fieldStr, field)
 
         sqls = []
-        sqls.append("CREATE TABLE {0} ({1})".format(tableName, fieldStr))
+        sqls.append('CREATE TABLE {0} ({1})'.format(tableName, fieldStr))
         if primaryKey and not primaryKey.isspace():
-            sqls.append("CREATE UNIQUE INDEX index_{0}_{1} "
-                        "ON {0}({1})".format(tableName, primaryKey))
+            sqls.append('CREATE UNIQUE INDEX index_{0}_{1} '
+                        'ON {0}({1})'.format(tableName, primaryKey))
         retval = self._exec_queries(sqls)
         return True if retval is not None else False
 
@@ -75,7 +79,7 @@ class DBConnection:
                 'Table does not exist!'.format(tableName))
             return False
 
-        sqls = ["DROP TABLE {0}".format(tableName)]
+        sqls = ['DROP TABLE {0}'.format(tableName)]
         retval = self._exec_queries(sqls)
         return True if retval is not None else False
 
@@ -88,8 +92,8 @@ class DBConnection:
             logger.error('Invalid table name "{0}" given!'.format(tableName))
             return False
 
-        sqls = ["SELECT name FROM sqlite_master "
-                "WHERE type='table' AND name='{0}'".format(tableName)]
+        sqls = ['SELECT name FROM sqlite_master '
+                'WHERE type=\'table\' AND name=\'{0}\''.format(tableName)]
         retval = self._exec_queries(sqls)
         return True if len(retval) and retval[0] is not None else False
 
@@ -122,17 +126,17 @@ class DBConnection:
                 'Table does not exist!'.format(tableName))
             return False
 
-        sqls = ["SELECT * FROM {0} WHERE {1} "
-                "= '{2}'".format(tableName, primaryKey, id)]
+        sqls = ['SELECT * FROM {0} WHERE {1} '
+                '= \'{2}\''.format(tableName, primaryKey, id)]
         retval = self._exec_queries(sqls)
         if len(retval) and retval[0] is not None:
             logger.debug('Updating entry {0}="{1}"'.format(primaryKey, id))
-            sqls = ["UPDATE {0} SET {1} WHERE {2} = '{3}'".format(tableName, 
-                    ', '.join("%s='%s'" % (k, v) for k, v in values.items()), 
-                    primaryKey, id)]
+            sqls = ['UPDATE {0} SET {1} WHERE {2} = \'{3}\''.format(tableName,
+                    ', '.join("%s='%s'" % (k, v) for k, v in values.items()),
+                                                                    primaryKey, id)]
         else:
             logger.debug('Inserting new entry {0}="{1}"'.format(primaryKey, id))
-            sqls = ["INSERT INTO {0} ({1}) VALUES ({2})".format(tableName, 
+            sqls = ['INSERT INTO {0} ({1}) VALUES ({2})'.format(tableName,
                     ', '.join("{0}".format(k) for k in values.keys()), 
                     ', '.join("'{0}'".format(values[k]) for k in values.keys()))]
 
@@ -165,13 +169,13 @@ class DBConnection:
                                 'to return value'.format(sql, row))
                     logger.debug('executed query "{0}"'.format(sql))
         except sqlite3.OperationalError as err:
-            logger.error("{0}! query: {1}".format(err, sql))
+            logger.error('{0}! query: {1}'.format(err, sql))
             return None
         return results
 
 
 # Run minimal test
-if __name__ == "__main__":
+if __name__ == '__main__':
     db = DBConnection()
     if db.tableExists('user'):
         db.deleteTable('user')

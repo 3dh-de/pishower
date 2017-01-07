@@ -1,4 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+""" PiShower project
+    @copyright  Christian Daehn (c) 2006, http://3dh.de
+    @license    MIT license
+"""
 
 import os
 import sys
@@ -11,8 +17,9 @@ sys.path.append("../")
 from rfidreader import UsbRfidReader
 from pishowerutils import logger
 
-# Control an USB RFID reader
+
 class TestRfidReader(unittest.TestCase):
+    """ Control an USB RFID reader """
     reader = None
 
     def setUp(self):

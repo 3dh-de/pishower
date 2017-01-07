@@ -1,4 +1,7 @@
-﻿import smbus
+﻿# author:  https://github.com/CaptainStouf/raspberry_lcd4x20_I2C
+# license: GPL 2.0
+
+import smbus
 from time import *
 
 class i2c_device:
