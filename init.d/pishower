@@ -1,0 +1,51 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          pishower
+# Required-Start:    hostname $local_fs
+# Required-Stop:
+# Should-Start:
+# Default-Start:     1 2 3 4 5
+# Default-Stop:
+# Short-Description: PiShower daemon
+# Description:       Starts LCD display and relay control for showers
+### END INIT INFO
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+. /lib/init/vars.sh
+
+do_start () {
+	# Update motd
+	cd /usr/local/pishower && python pishowermain.py 2>&1 >/var/run/pishower &
+}
+
+do_status () {
+	if [ -f /var/run/pishower ] ; then
+		return 0
+	else
+		return 4
+	fi
+}
+
+case "$1" in
+  start|"")
+	do_start
+	;;
+  restart|reload|force-reload)
+	echo "Error: argument '$1' not supported" >&2
+	exit 3
+	;;
+  stop)
+	killall -9 python
+        rm /var/run/pishower
+	;;
+  status)
+	do_status
+	exit $?
+	;;
+  *)
+	echo "Usage: motd [start|stop|status]" >&2
+	exit 3
+	;;
+esac
+
+:
